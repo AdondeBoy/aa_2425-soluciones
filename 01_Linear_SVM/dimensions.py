@@ -35,4 +35,12 @@ y_prediction = svm.predict(X_test)
 
 # Calcular núm aciertos y dividir entre núm de muestras
 r = np.sum(y_prediction == y_test) / len(y_test)
+
+# Solución del profe
+#diffs = (y_prediction - y_test)
+#errors = np.count_nonzero(diffs)
+
+#Copilot pone esto en lugar de la línea anterior
+#r = len(diffs[diffs == 0]) / len(y_test)
+
 print(r)
