@@ -1,6 +1,8 @@
 import os
 import numpy as np
 import xml.etree.ElementTree as etree
+import skimage
+import matplotlib.pyplot as plt
 from skimage.io import imread
 from skimage.transform import resize
 
@@ -77,7 +79,16 @@ def obtenir_dades(carpeta_imatges, carpeta_anotacions, mida=(64, 64)):
 
 
 def obtenirHoG(imatges):
-    # TODO: POSA EL TEU CODI
+    #for img in imatges:
+    out, hog_image = skimage.feature.hog(imatges[:, :, 3],
+                        orientations = 9,
+                        pixels_per_cell = (8, 8),
+                        cells_per_block = (3, 3),
+                        visualize = True)
+    plt.imshow(hog_image)
+    plt.show()
+
+
 
     return
 
@@ -85,10 +96,10 @@ def obtenirHoG(imatges):
 def main():
     carpeta_images = "gatigos/images"  # NO ES POT MODIFICAR
     carpeta_anotacions = "gatigos/annotations"  # NO ES POT MODIFICAR
-    mida = (1, 1)  # DEFINEIX LA MIDA, ES RECOMANA COMENÇAR AMB 64x64
+    mida = (64, 64)  # DEFINEIX LA MIDA, ES RECOMANA COMENÇAR AMB 64x64
     imatges, etiquetes = obtenir_dades(carpeta_images, carpeta_anotacions, mida)
 
-    # caracteristiques = obtenirHoG(imatges)
+    caracteristiques = obtenirHoG(imatges)
 
 
 if __name__ == "__main__":
