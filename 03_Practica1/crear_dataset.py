@@ -5,6 +5,8 @@ import skimage
 import matplotlib.pyplot as plt
 from skimage.io import imread
 from skimage.transform import resize
+from sklearn.svm import SVC
+from sklearn.metrics import confusion_matrix
 
 
 # https://www.kaggle.com/datasets/andrewmvd/dog-and-cat-detection/code
@@ -79,18 +81,19 @@ def obtenir_dades(carpeta_imatges, carpeta_anotacions, mida=(64, 64)):
 
 
 def obtenirHoG(imatges):
-    #for img in imatges:
-    out, hog_image = skimage.feature.hog(imatges[:, :, 3],
-                        orientations = 9,
-                        pixels_per_cell = (8, 8),
-                        cells_per_block = (3, 3),
-                        visualize = True)
-    plt.imshow(hog_image)
-    plt.show()
+    caracts = []
+    # Recorrido de los índices de las imágenes (eje z del array, con .shape[2])
+    for i in range(imatges.shape[2]):
+        out, hog_image = skimage.feature.hog(imatges[:, :, i],
+                                             orientations=9,
+                                             pixels_per_cell=(3, 3),
+                                             cells_per_block=(2, 2),
+                                             visualize=True)
+        caracts.append(out)
+        #plt.imshow(hog_image)
+        #plt.show()
 
-
-
-    return
+    return caracts
 
 
 def main():
@@ -99,7 +102,18 @@ def main():
     mida = (64, 64)  # DEFINEIX LA MIDA, ES RECOMANA COMENÇAR AMB 64x64
     imatges, etiquetes = obtenir_dades(carpeta_images, carpeta_anotacions, mida)
 
+    # Las imágenes ya fueron estandarizadas en obtenir_dades, ahora se convertirán a características HoG
     caracteristiques = obtenirHoG(imatges)
+
+    # Entrenar una SVM linear
+    svm = SVC(C=1000.0, kernel="linear")
+    svm.fit(caracteristiques, etiquetes)
+    y_prediction_svm = svm.predict(caracteristiques)
+
+    # Mostrar resultados
+    print(confusion_matrix(etiquetes, y_prediction_svm))
+
+
 
 
 if __name__ == "__main__":
