@@ -105,10 +105,13 @@ def main():
     # Las imágenes ya fueron estandarizadas en obtenir_dades, ahora se convertirán a características HoG
     caracteristiques = obtenirHoG(imatges)
 
-    # Entrenar una SVM linear
+    # Train de SVM lineal
     svm = SVC(C=1000.0, kernel="linear")
     svm.fit(caracteristiques, etiquetes)
     y_prediction_svm = svm.predict(caracteristiques)
+
+    # Test de SVM lineal
+    # (FALTA SEPARAR TRAIN Y TEST)
 
     # Mostrar resultados
     print(confusion_matrix(etiquetes, y_prediction_svm))
